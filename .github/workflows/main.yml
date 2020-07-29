@@ -32,7 +32,7 @@ jobs:
             VERSION=${{ github.event.inputs.tags }}
           fi
 
-          TAGS="--tag ${DOCKER_IMAGE}:${VERSION}"
+          TAGS="--tag ${DOCKER_IMAGE}:${VERSION}_arm64"
 
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
           echo ::set-output name=version::${VERSION}
