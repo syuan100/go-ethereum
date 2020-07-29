@@ -28,7 +28,7 @@ jobs:
             VERSION=${GITHUB_REF#refs/tags/v}
           fi
           
-          if [[ ${github.event.inputs.tags} ]]; then
+          if [[ ${{ github.event.inputs.tags }} ]]; then
             VERSION=${{ github.event.inputs.tags }}
           fi
 
