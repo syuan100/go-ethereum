@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tags:
-        description: 'Test scenario tags'
+        description: 'Test tags'
 
 jobs:
   buildx:
@@ -23,9 +23,13 @@ jobs:
           DOCKER_IMAGE=syuan100/go-ethereum
           DOCKER_PLATFORMS=linux/arm64
           VERSION=${TAGS}
-
+          
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#refs/tags/v}
+          fi
+          
+          if [[ $github.event.inputs.tags ]]; then
+            VERSION=${github.event.inputs.tags}
           fi
 
           TAGS="--tag ${DOCKER_IMAGE}:${VERSION}"
