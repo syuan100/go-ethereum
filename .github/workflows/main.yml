@@ -28,8 +28,8 @@ jobs:
             VERSION=${GITHUB_REF#refs/tags/v}
           fi
           
-          if [[ $github.event.inputs.tags ]]; then
-            VERSION=${github.event.inputs.tags}
+          if [[ ${github.event.inputs.tags} ]]; then
+            VERSION=${{ github.event.inputs.tags }}
           fi
 
           TAGS="--tag ${DOCKER_IMAGE}:${VERSION}"
