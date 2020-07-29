@@ -1,6 +1,8 @@
 name: buildx
 
 on:
+  schedule:
+    - cron: '0 10 * * *' # everyday at 10am
   push:
     tags:
       - v*
@@ -30,6 +32,10 @@ jobs:
           
           if [[ ${{ github.event.inputs.tags }} ]]; then
             VERSION=${{ github.event.inputs.tags }}
+          fi
+          
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            VERSION=nightly
           fi
 
           TAGS="--tag ${DOCKER_IMAGE}:${VERSION}_arm64"
