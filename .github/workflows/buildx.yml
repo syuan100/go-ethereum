@@ -1,4 +1,4 @@
-name: buildx
+name: Scheduled Push - ARM64 Docker Image
 
 on:
   schedule:
