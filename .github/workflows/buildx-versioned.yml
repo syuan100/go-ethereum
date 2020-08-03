@@ -23,7 +23,7 @@ jobs:
         name: Checkout latest release
         uses: actions/checkout@v2
         with:
-          release: ${{ steps.geth.output.release }}
+          ref: refs/tags/${{ steps.geth.output.release }}
       -
         name: Prepare versioned image
         id: prepare-versioned
