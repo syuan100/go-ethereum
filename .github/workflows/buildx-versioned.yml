@@ -20,11 +20,14 @@ jobs:
             owner: ethereum
             repo: go-ethereum
       -
-        name: Checkout latest release
-        uses: actions/checkout@v2
-        with:
-          ref: refs/tags/${{ steps.geth.outputs.release }}
-          fetch-depth: 0
+        name: release debug
+        run: echo "::debug::${{ steps.geth.outputs.release }}
+#       -
+#         name: Checkout latest release
+#         uses: actions/checkout@v2
+#         with:
+#           ref: refs/tags/${{ steps.geth.outputs.release }}
+#           fetch-depth: 0
       -
         name: Prepare versioned image
         id: prepare-versioned
