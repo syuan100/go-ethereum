@@ -21,7 +21,7 @@ jobs:
             repo: go-ethereum
       -
         name: release debug
-        run: echo "::debug::${{ steps.geth.outputs.release }}
+        run: echo ${{ steps.geth.outputs.release }}
 #       -
 #         name: Checkout latest release
 #         uses: actions/checkout@v2
