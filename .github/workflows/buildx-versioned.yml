@@ -31,7 +31,7 @@ jobs:
         run: |
           DOCKER_IMAGE=syuan100/go-ethereum
           DOCKER_PLATFORMS=linux/arm64
-          VERSION=${{ steps.geth.output.release }}
+          VERSION=${{ steps.geth.outputs.release }}
 
           TAGS="--tag ${DOCKER_IMAGE}:${VERSION}_arm64"
 
