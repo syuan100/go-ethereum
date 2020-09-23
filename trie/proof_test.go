@@ -451,7 +451,7 @@ func TestBadRangeProof(t *testing.T) {
 			// with the first/last second element(since small values are
 			// embedded in the parent). Avoid this case.
 			index = mrand.Intn(end - start)
-			if (index == end-start-1 || index == 0) && end <= 100 {
+			if (index == 0 && start < 100) || (index == end-start-1 && end <= 100) {
 				continue
 			}
 			keys = append(keys[:index], keys[index+1:]...)
@@ -567,6 +567,39 @@ func TestHasRightElement(t *testing.T) {
 		}
 		if hasMore != c.hasMore {
 			t.Fatalf("Wrong hasMore indicator, want %t, got %t", c.hasMore, hasMore)
+		}
+	}
+}
+
+// TestEmptyRangeProof tests the range proof with "no" element.
+// The first edge proof must be a non-existent proof.
+func TestEmptyRangeProof(t *testing.T) {
+	trie, vals := randomTrie(4096)
+	var entries entrySlice
+	for _, kv := range vals {
+		entries = append(entries, kv)
+	}
+	sort.Sort(entries)
+
+	var cases = []struct {
+		pos int
+		err bool
+	}{
+		{len(entries) - 1, false},
+		{500, true},
+	}
+	for _, c := range cases {
+		firstProof := memorydb.New()
+		first := increseKey(common.CopyBytes(entries[c.pos].k))
+		if err := trie.Prove(first, 0, firstProof); err != nil {
+			t.Fatalf("Failed to prove the first node %v", err)
+		}
+		err, _ := VerifyRangeProof(trie.Hash(), first, nil, nil, firstProof, nil)
+		if c.err && err == nil {
+			t.Fatalf("Expected error, got nil")
+		}
+		if !c.err && err != nil {
+			t.Fatalf("Expected no error, got %v", err)
 		}
 	}
 }
