@@ -199,6 +199,7 @@ var (
 		utils.InsecureUnlockAllowedFlag,
 		utils.RPCGlobalGasCapFlag,
 		utils.RPCGlobalTxFeeCapFlag,
+		utils.AllowUnprotectedTxs,
 	}
 
 	whisperFlags = []cli.Flag{
@@ -238,7 +239,6 @@ func init() {
 		removedbCommand,
 		dumpCommand,
 		dumpGenesisCommand,
-		inspectCommand,
 		// See accountcmd.go:
 		accountCommand,
 		walletCommand,
@@ -254,6 +254,8 @@ func init() {
 		licenseCommand,
 		// See config.go
 		dumpConfigCommand,
+		// see dbcmd.go
+		dbCommand,
 		// See cmd/utils/flags_legacy.go
 		utils.ShowDeprecated,
 		// See snapshot.go

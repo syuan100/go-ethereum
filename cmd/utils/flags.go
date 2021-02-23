@@ -593,6 +593,10 @@ var (
 		Name:  "preload",
 		Usage: "Comma separated list of JavaScript files to preload into the console",
 	}
+	AllowUnprotectedTxs = cli.BoolFlag{
+		Name:  "rpc.allow-unprotected-txs",
+		Usage: "Allow for unprotected (non EIP155 signed) transactions to be submitted via RPC",
+	}
 
 	// Network Settings
 	MaxPeersFlag = cli.IntFlag{
@@ -966,6 +970,9 @@ func setHTTP(ctx *cli.Context, cfg *node.Config) {
 	if ctx.GlobalIsSet(HTTPPathPrefixFlag.Name) {
 		cfg.HTTPPathPrefix = ctx.GlobalString(HTTPPathPrefixFlag.Name)
 	}
+	if ctx.GlobalIsSet(AllowUnprotectedTxs.Name) {
+		cfg.AllowUnprotectedTxs = ctx.GlobalBool(AllowUnprotectedTxs.Name)
+	}
 }
 
 // setGraphQL creates the GraphQL listener interface string from the set
@@ -1073,9 +1080,9 @@ func setLes(ctx *cli.Context, cfg *ethconfig.Config) {
 	}
 }
 
-// makeDatabaseHandles raises out the number of allowed file handles per process
+// MakeDatabaseHandles raises out the number of allowed file handles per process
 // for Geth and returns half of the allowance to assign to the database.
-func makeDatabaseHandles() int {
+func MakeDatabaseHandles() int {
 	limit, err := fdlimit.Maximum()
 	if err != nil {
 		Fatalf("Failed to retrieve file descriptor allowance: %v", err)
@@ -1546,7 +1553,7 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 	if ctx.GlobalIsSet(CacheFlag.Name) || ctx.GlobalIsSet(CacheDatabaseFlag.Name) {
 		cfg.DatabaseCache = ctx.GlobalInt(CacheFlag.Name) * ctx.GlobalInt(CacheDatabaseFlag.Name) / 100
 	}
-	cfg.DatabaseHandles = makeDatabaseHandles()
+	cfg.DatabaseHandles = MakeDatabaseHandles()
 	if ctx.GlobalIsSet(AncientFlag.Name) {
 		cfg.DatabaseFreezer = ctx.GlobalString(AncientFlag.Name)
 	}
@@ -1821,7 +1828,7 @@ func SplitTagsFlag(tagsFlag string) map[string]string {
 func MakeChainDatabase(ctx *cli.Context, stack *node.Node) ethdb.Database {
 	var (
 		cache   = ctx.GlobalInt(CacheFlag.Name) * ctx.GlobalInt(CacheDatabaseFlag.Name) / 100
-		handles = makeDatabaseHandles()
+		handles = MakeDatabaseHandles()
 
 		err     error
 		chainDb ethdb.Database
