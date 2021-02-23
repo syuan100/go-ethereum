@@ -5,7 +5,7 @@ jobs:
   allow_failures:
     - stage: build
       os: osx
-      go: 1.14.x
+      go: 1.15.x
       env:
         - azure-osx
         - azure-ios
@@ -16,7 +16,7 @@ jobs:
     - stage: lint
       os: linux
       dist: xenial
-      go: 1.15.x
+      go: 1.16.x
       env:
         - lint
       git:
@@ -29,7 +29,7 @@ jobs:
       if: type = push
       os: linux
       dist: xenial
-      go: 1.15.x
+      go: 1.16.x
       env:
         - ubuntu-ppa
         - GO111MODULE=on
@@ -54,7 +54,7 @@ jobs:
       os: linux
       dist: xenial
       sudo: required
-      go: 1.15.x
+      go: 1.16.x
       env:
         - azure-linux
         - GO111MODULE=on
@@ -91,7 +91,7 @@ jobs:
       dist: xenial
       services:
         - docker
-      go: 1.15.x
+      go: 1.16.x
       env:
         - azure-linux-mips
         - GO111MODULE=on
@@ -139,15 +139,15 @@ jobs:
       git:
         submodules: false # avoid cloning ethereum/tests
       before_install:
-        - curl https://dl.google.com/go/go1.15.5.linux-amd64.tar.gz | tar -xz
+        - curl https://dl.google.com/go/go1.16.linux-amd64.tar.gz | tar -xz
         - export PATH=`pwd`/go/bin:$PATH
         - export GOROOT=`pwd`/go
         - export GOPATH=$HOME/go
       script:
         # Build the Android archive and upload it to Maven Central and Azure
-        - curl https://dl.google.com/android/repository/android-ndk-r19b-linux-x86_64.zip -o android-ndk-r19b.zip
-        - unzip -q android-ndk-r19b.zip && rm android-ndk-r19b.zip
-        - mv android-ndk-r19b $ANDROID_HOME/ndk-bundle
+        - curl https://dl.google.com/android/repository/android-ndk-r21e-linux-x86_64.zip -o android-ndk-r21e.zip
+        - unzip -q android-ndk-r21e.zip && rm android-ndk-r21e.zip
+        - mv android-ndk-r21e $ANDROID_HOME/ndk-bundle
 
         - mkdir -p $GOPATH/src/github.com/ethereum
         - ln -s `pwd` $GOPATH/src/github.com/ethereum/go-ethereum
@@ -157,7 +157,7 @@ jobs:
     - stage: build
       if: type = push
       os: osx
-      go: 1.15.x
+      go: 1.16.x
       env:
         - azure-osx
         - azure-ios
@@ -189,7 +189,7 @@ jobs:
       os: linux
       arch: amd64
       dist: xenial
-      go: 1.15.x
+      go: 1.16.x
       env:
         - GO111MODULE=on
       script:
@@ -200,7 +200,7 @@ jobs:
       os: linux
       arch: arm64
       dist: xenial
-      go: 1.15.x
+      go: 1.16.x
       env:
         - GO111MODULE=on
       script:
@@ -209,7 +209,7 @@ jobs:
     - stage: build
       os: linux
       dist: xenial
-      go: 1.14.x
+      go: 1.15.x
       env:
         - GO111MODULE=on
       script:
@@ -220,7 +220,7 @@ jobs:
       if: type = cron
       os: linux
       dist: xenial
-      go: 1.15.x
+      go: 1.16.x
       env:
         - azure-purge
         - GO111MODULE=on
