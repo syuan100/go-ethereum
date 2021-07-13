@@ -108,6 +108,12 @@ web3._extend({
 			call: 'clique_status',
 			params: 0
 		}),
+		new web3._extend.Method({
+			name: 'getSigner',
+			call: 'clique_getSigner',
+			params: 1,
+			inputFormatter: [null]
+		}),
 	],
 	properties: [
 		new web3._extend.Property({
@@ -809,6 +815,11 @@ web3._extend({
 				status.queued = web3._extend.utils.toDecimal(status.queued);
 				return status;
 			}
+		}),
+		new web3._extend.Method({
+			name: 'contentFrom',
+			call: 'txpool_contentFrom',
+			params: 1,
 		}),
 	]
 });
