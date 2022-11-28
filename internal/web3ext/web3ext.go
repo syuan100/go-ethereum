@@ -604,6 +604,7 @@ web3._extend({
 			name: 'call',
 			call: 'eth_call',
 			params: 3,
+			inputFormatter: [web3._extend.formatters.inputCallFormatter, web3._extend.formatters.inputDefaultBlockNumberFormatter, null],
 		}),
 	],
 	properties: [
