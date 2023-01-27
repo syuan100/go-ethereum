@@ -79,6 +79,17 @@ const (
 	beaconUpdateWarnFrequency = 5 * time.Minute
 )
 
+// All methods provided over the engine endpoint.
+var caps = []string{
+	"engine_forkchoiceUpdatedV1",
+	"engine_forkchoiceUpdatedV2",
+	"engine_exchangeTransitionConfigurationV1",
+	"engine_getPayloadV1",
+	"engine_getPayloadV2",
+	"engine_newPayloadV1",
+	"engine_newPayloadV2",
+}
+
 type ConsensusAPI struct {
 	eth *eth.Ethereum
 
@@ -164,6 +175,18 @@ func (api *ConsensusAPI) ForkchoiceUpdatedV1(update beacon.ForkchoiceStateV1, pa
 
 // ForkchoiceUpdatedV2 is equivalent to V1 with the addition of withdrawals in the payload attributes.
 func (api *ConsensusAPI) ForkchoiceUpdatedV2(update beacon.ForkchoiceStateV1, payloadAttributes *beacon.PayloadAttributes) (beacon.ForkChoiceResponse, error) {
+	if !api.eth.BlockChain().Config().IsShanghai(payloadAttributes.Timestamp) {
+		// Reject payload attributes with withdrawals before shanghai
+		if payloadAttributes != nil && payloadAttributes.Withdrawals != nil {
+			return beacon.STATUS_INVALID, beacon.InvalidPayloadAttributes.With(errors.New("withdrawals before shanghai"))
+		}
+	} else {
+		// Reject payload attributes with nil withdrawals after shanghai
+		if payloadAttributes != nil && payloadAttributes.Withdrawals == nil {
+			return beacon.STATUS_INVALID, beacon.InvalidPayloadAttributes.With(errors.New("missing withdrawals list"))
+		}
+	}
+
 	return api.forkchoiceUpdated(update, payloadAttributes)
 }
 
@@ -719,4 +742,9 @@ func (api *ConsensusAPI) heartbeat() {
 			offlineLogged = time.Now()
 		}
 	}
+}
+
+// ExchangeCapabilities returns the current methods provided by this node.
+func (api *ConsensusAPI) ExchangeCapabilities([]string) []string {
+	return caps
 }
