@@ -184,7 +184,7 @@ func newBlobTxMeta(id uint64, size uint32, tx *types.Transaction) *blobTxMeta {
 //   - Local txs are meaningless. Mining pools historically used local transactions
 //     for payouts or for backdoor deals. With 1559 in place, the basefee usually
 //     dominates the final price, so 0 or non-0 tip doesn't change much. Blob txs
-//     retain the 1559 2D gas pricing (and introduce on top a dynamic data gas fee),
+//     retain the 1559 2D gas pricing (and introduce on top a dynamic blob gas fee),
 //     so locality is moot. With a disk backed blob pool avoiding the resend issue,
 //     there's also no need to save own transactions for later.
 //
@@ -768,8 +768,9 @@ func (p *BlobPool) Reset(oldHead, newHead *types.Header) {
 		}
 	}
 	// Flush out any blobs from limbo that are older than the latest finality
-	p.limbo.finalize(p.chain.CurrentFinalBlock())
-
+	if p.chain.Config().IsCancun(p.head.Number, p.head.Time) {
+		p.limbo.finalize(p.chain.CurrentFinalBlock())
+	}
 	// Reset the price heap for the new set of basefee/blobfee pairs
 	var (
 		basefee = uint256.MustFromBig(misc.CalcBaseFee(p.chain.Config(), newHead))
